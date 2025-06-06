@@ -1,0 +1,28 @@
+name: 駐車場監視システム
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'  # 10分間隔で実行
+  workflow_dispatch:  # 手動実行も可能
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    
+    - name: Install dependencies
+      run: npm install puppeteer
+    
+    - name: Run parking monitor
+      run: node monitor.js
+      env:
+        PARKING_USERNAME: ${{ secrets.PARKING_USERNAME }}
+        PARKING_PASSWORD: ${{ secrets.PARKING_PASSWORD }}
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
